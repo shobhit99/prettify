@@ -1,6 +1,6 @@
 import React, { useState, useRef, useCallback } from 'react';
 import { toPng } from 'html-to-image';
-import { Download, Upload } from 'lucide-react';
+import { Download, Upload, Maximize, PanelTop, CornerUpRight, Cloud, Sun, SunDim } from 'lucide-react';
 
 interface EditorState {
   screenshot: string | null;
@@ -226,7 +226,10 @@ const App: React.FC = () => {
               <h2 className="text-xl font-semibold mb-2">Customization</h2>
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Container Size</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center">
+                    <Maximize className="mr-2" size={16} />
+                    Container Size
+                  </label>
                   <input
                     type="range"
                     min="35"
@@ -237,18 +240,24 @@ const App: React.FC = () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Padding</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center">
+                    <PanelTop className="mr-2" size={16} />
+                    Padding
+                  </label>
                   <input
                     type="range"
                     min="10"
-                    max="30"  // Changed from 20 to 50
+                    max="30"
                     value={state.padding}
                     onChange={(e) => setState((prev) => ({ ...prev, padding: Number(e.target.value) }))}
                     className="w-full"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Border Radius</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center">
+                    <CornerUpRight className="mr-2" size={16} />
+                    Border Radius
+                  </label>
                   <input
                     type="range"
                     min="0"
@@ -259,7 +268,10 @@ const App: React.FC = () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Shadow Size</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center">
+                    <Cloud className="mr-2" size={16} />
+                    Shadow Size
+                  </label>
                   <input
                     type="range"
                     min="0"
@@ -270,7 +282,10 @@ const App: React.FC = () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Shadow Intensity</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center">
+                    <Sun className="mr-2" size={16} />
+                    Shadow Intensity
+                  </label>
                   <input
                     type="range"
                     min="0"
@@ -282,7 +297,10 @@ const App: React.FC = () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Background Blur</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center">
+                    <SunDim className="mr-2" size={16} />
+                    Background Blur
+                  </label>
                   <input
                     type="range"
                     min="0"
