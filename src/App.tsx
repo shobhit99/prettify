@@ -226,7 +226,7 @@ const App: React.FC = () => {
                   <label className="block text-sm font-medium text-gray-700 mb-1">Container Size</label>
                   <input
                     type="range"
-                    min="50"
+                    min="35"
                     max="100"
                     value={state.containerSize}
                     onChange={(e) => setState((prev) => ({ ...prev, containerSize: Number(e.target.value) }))}
