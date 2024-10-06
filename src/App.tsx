@@ -53,6 +53,8 @@ const gradientPresets: { name: string; background: string }[] = [
   { name: 'Frozen Berry', background: 'linear-gradient(to right, #5C258D, #4389A2)' },
 ];
 
+const CONTAINER_FIXED_HEIGHT = 600;
+
 const App: React.FC = () => {
   const [state, setState] = useState<EditorState>({
     screenshot: null,
@@ -71,11 +73,37 @@ const App: React.FC = () => {
 
   const [imageSize, setImageSize] = useState({ width: 0, height: 0 });
 
+  const adjustImageSettings = (imgWidth: number, imgHeight: number) => {
+    const containerHeight = CONTAINER_FIXED_HEIGHT;
+    const containerWidth = (containerHeight * imgWidth) / imgHeight;
+    
+    if (containerWidth > 600 || imgHeight > containerHeight) {
+      // Image is larger than the container, set border radius to 50% of the slider max
+      setState(prev => ({
+        ...prev,
+        borderRadius: Math.min(25, prev.borderRadius) // 25 is 50% of the max slider value (50)
+      }));
+    }
+
+    // Add this condition to set padding to 50% when image height is >= container height
+    if (imgHeight >= containerHeight) {
+      setState(prev => ({
+        ...prev,
+        padding: 15 // 15 is 50% of the max padding slider value (30)
+      }));
+    }
+  };
+
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
       const reader = new FileReader();
       reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          adjustImageSettings(img.width, img.height);
+        };
+        img.src = e.target?.result as string;
         setState((prev) => ({ ...prev, screenshot: e.target?.result as string }));
       };
       reader.readAsDataURL(file);
@@ -110,7 +138,7 @@ const App: React.FC = () => {
   const containerStyle = {
     width: `${state.containerSize}%`,
     maxWidth: '1280px',
-    height: '600px',
+    height: `${CONTAINER_FIXED_HEIGHT}px`,
     position: 'relative' as const,
     overflow: 'hidden',
   };
@@ -164,6 +192,7 @@ const App: React.FC = () => {
   const handleImageLoad = (event: React.SyntheticEvent<HTMLImageElement>) => {
     const img = event.currentTarget;
     setImageSize({ width: img.width, height: img.height });
+    adjustImageSettings(img.width, img.height);
   };
 
   const handleTabChange = (newTab: 'macOS' | 'Gradients' | 'Wallpapers') => {
