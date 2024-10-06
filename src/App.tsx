@@ -20,13 +20,13 @@ const macOSPresets: { name: string; background: string }[] = [
   { name: 'Mojave', background: 'url(https://images.unsplash.com/photo-1541280910158-c4e14f9c94a3)' },
   { name: 'High Sierra', background: 'url(https://images.unsplash.com/photo-1506744038136-46273834b3fb)' },
   { name: 'Sierra', background: 'url(https://images.unsplash.com/photo-1511300636408-a63a89df3482)' },
-  { name: 'El Capitan', background: 'url(https://images.unsplash.com/photo-1469474968028-56623f02e42e)' },
+  { name: 'El Capitan', background: 'url(https://images.unsplash.com/photo-1469474968028-56623834b3fe)' },
   { name: 'Yosemite', background: 'url(https://images.unsplash.com/photo-1426604966848-d7adac402bff)' },
   { name: 'Mavericks', background: 'url(https://images.unsplash.com/photo-1472214103451-9374bd1c798e)' },
 ];
 
 const gradientPresets: { name: string; background: string }[] = [
-  { name: 'Sunset', background: 'linear-gradient(to right, #FF512F, #F09819, #DD2476)' },
+  { name: 'Sunset', background: 'linear-gradient(to right, #FF512F, #F4D03F, #DD2476)' },
   { name: 'Ocean', background: 'linear-gradient(to right, #1A2980, #26D0CE, #2C3E50)' },
   { name: 'Meadow', background: 'linear-gradient(to right, #16A085, #F4D03F, #4CAF50)' },
   { name: 'Lavender', background: 'linear-gradient(to right, #834d9b, #D04ED6, #9A48D0)' },
@@ -39,14 +39,14 @@ const gradientPresets: { name: string; background: string }[] = [
 const App: React.FC = () => {
   const [state, setState] = useState<EditorState>({
     screenshot: null,
-    background: macOSPresets[0].background,
+    background: gradientPresets[0].background, // Set a default gradient
     padding: 0,
     borderRadius: 10,
     shadow: 20,
     shadowIntensity: 0.1,
     showMacOSMockup: false,
     containerSize: 100,
-    activeTab: 'macOS',
+    activeTab: 'Gradients', // Set the default tab to Gradients
   });
 
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -80,26 +80,39 @@ const App: React.FC = () => {
     }
   }, [state]);
 
-  const MacOSMockup: React.FC = () => (
-    <div className="absolute top-0 left-0 right-0 bg-gray-200 rounded-t-lg p-2 flex items-center space-x-2">
-      <div className="w-3 h-3 rounded-full bg-red-500"></div>
-      <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
-      <div className="w-3 h-3 rounded-full bg-green-500"></div>
-    </div>
-  );
-
   const containerStyle = {
     width: `${state.containerSize}%`,
-    aspectRatio: '16/9',
-    background: state.background,
-    backgroundSize: 'cover',
-    backgroundPosition: 'center',
+    maxWidth: '1280px',
+    height: '600px',
+    position: 'relative' as const,
+    overflow: 'hidden',
+  };
+
+  const backgroundStyle = {
+    position: 'absolute' as const,
+    top: '0',
+    left: '0',
+    right: '0',
+    bottom: '0',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: state.activeTab === 'macOS' ? '#000' : 'transparent',
+  };
+
+  const wallpaperStyle = {
+    width: '100%',
+    height: '100%',
+    objectFit: 'cover' as const,
   };
 
   const contentStyle = {
+    position: 'absolute' as const,
+    top: '0',
+    left: '0',
+    right: '0',
+    bottom: '0',
     padding: `${state.padding}%`,
-    width: '100%',
-    height: '100%',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
@@ -113,6 +126,14 @@ const App: React.FC = () => {
     boxShadow: `0 ${state.shadow}px ${state.shadow * 2}px rgba(0,0,0,${state.shadowIntensity})`,
   };
 
+  const MacOSMockup: React.FC = () => (
+    <div className="absolute top-0 left-0 right-0 bg-gray-200 rounded-t-lg p-2 flex items-center space-x-2">
+      <div className="w-3 h-3 rounded-full bg-red-500"></div>
+      <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
+      <div className="w-3 h-3 rounded-full bg-green-500"></div>
+    </div>
+  );
+
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center p-8">
       <div className="bg-white rounded-lg shadow-lg p-8 w-full max-w-7xl">
@@ -122,24 +143,35 @@ const App: React.FC = () => {
           <div className="w-full lg:w-2/3 px-4 mb-4">
             <div
               ref={screenshotRef}
-              className="relative rounded-lg flex items-center justify-center overflow-hidden"
+              className="relative overflow-hidden"
               style={containerStyle}
             >
+              <div style={backgroundStyle}>
+                {state.activeTab === 'macOS' ? (
+                  <img src={state.background.replace('url(', '').replace(')', '')} alt="Wallpaper" style={wallpaperStyle} />
+                ) : (
+                  <div style={{ ...wallpaperStyle, background: state.background }} />
+                )}
+              </div>
               <div style={contentStyle}>
-                {state.screenshot && (
+                {state.screenshot ? (
                   <div className="relative flex items-center justify-center" style={{ width: '100%', height: '100%' }}>
-                    {state.showMacOSMockup && <MacOSMockup />}
                     <img
                       src={state.screenshot}
                       alt="Screenshot"
                       style={imageStyle}
                     />
+                    {state.showMacOSMockup && (
+                      <div className="absolute inset-0 flex flex-col" style={{ borderRadius: `${state.borderRadius}px` }}>
+                        <MacOSMockup />
+                        <div className="flex-grow"></div>
+                      </div>
+                    )}
                   </div>
+                ) : (
+                  <p className="text-gray-500 text-center">Your screenshot will appear here</p>
                 )}
               </div>
-              {!state.screenshot && (
-                <p className="text-gray-500">Your screenshot will appear here</p>
-              )}
             </div>
           </div>
           <div className="w-full lg:w-1/3 px-4">
