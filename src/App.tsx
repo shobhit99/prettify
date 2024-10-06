@@ -1,6 +1,6 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { toPng } from 'html-to-image';
-import { Download, Upload, Maximize, PanelTop, CornerUpRight, Cloud, Sun, SunDim, Twitter } from 'lucide-react';
+import { Download, Upload, Maximize, PanelTop, CornerUpRight, Cloud, Sun, SunDim, Twitter, X } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import Shobhit from '../public/shobhit.png';
 
@@ -432,7 +432,13 @@ const App: React.FC = () => {
 
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-8 max-w-md shadow-lg transform transition-all duration-300 ease-in-out">
+          <div className="bg-white rounded-lg p-8 max-w-md shadow-lg transform transition-all duration-300 ease-in-out relative">
+            <button
+              onClick={() => setShowModal(false)}
+              className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 transition-colors duration-200"
+            >
+              <X size={24} />
+            </button>
             <img src={"/images/shobhit.png"} alt="Logo" className="mb-4 mx-auto w-[100px] h-[120px]" />
             <h2 className="text-3xl font-bold mb-4 text-center text-purple-600">Thank you!</h2>
             <p className="mb-6 text-gray-700 text-center">I hope you enjoyed using prettify.pro!</p>
@@ -450,12 +456,9 @@ const App: React.FC = () => {
                 onClick={() => window.open('https://shipfa.st/?via=shobhit', '_blank')}
                 className="bg-black hover:bg-gray-800 text-white font-medium py-2 px-6 rounded-md flex items-center transition duration-300 ease-in-out transform hover:scale-105"
               >
-                <span className="mr-2">⚡ Ship My Startup Fast</span>
+                <span className="mr-2">⚡ Ship Your Startup Fast</span>
               </button>
               <a href="https://www.buymeacoffee.com/shobhit99" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" className='!h-10' /></a>
-            </div>
-            <div className="flex justify-between">
-
             </div>
           </div>
         </div>
