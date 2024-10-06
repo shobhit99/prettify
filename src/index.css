@@ -10,3 +10,9 @@ body {
   width: 100% !important;
   height: 150px !important;
 }
+
+.pacifico-regular {
+  font-family: "Pacifico", cursive;
+  font-weight: 400;
+  font-style: normal;
+}
