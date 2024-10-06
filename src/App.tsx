@@ -455,7 +455,7 @@ const App: React.FC = () => {
             <p className="mb-6 text-gray-700 text-center">I hope you enjoyed using prettify.pro!</p>
             <div className="flex flex-col items-center space-y-4 mb-6">
               <button
-                onClick={() => window.open('https://twitter.com/intent/follow?screen_name=shobhitic', '_blank')}
+                onClick={() => window.open('https://twitter.com/intent/follow?screen_name=nullbytes00', '_blank')}
                 className="bg-black hover:bg-gray-800 text-white font-medium py-2 px-6 rounded-md flex items-center transition duration-300 ease-in-out transform hover:scale-105"
               >
                 <span className="mr-2">Follow me on</span>
