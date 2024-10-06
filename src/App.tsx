@@ -10,11 +10,11 @@ interface EditorState {
   shadow: number;
   shadowIntensity: number;
   containerSize: number;
-  activeTab: 'macOS' | 'Gradients';
+  activeTab: 'macOS' | 'Gradients' | 'Wallpapers';
   blur: number;
 }
 
-const macOSPresets: { name: string; background: string }[] = [
+const wallpapers: { name: string; background: string }[] = [
   { name: 'Sierra', background: 'url(https://images.unsplash.com/photo-1511300636408-a63a89df3482)' },
   { name: 'Ocean Mist', background: 'url(https://images.unsplash.com/photo-1505144808419-1957a94ca61e)' },
   { name: 'Desert Dunes', background: 'url(https://images.unsplash.com/photo-1547234935-80c7145ec969)' },
@@ -23,6 +23,19 @@ const macOSPresets: { name: string; background: string }[] = [
   { name: 'Misty Forest', background: 'url(https://images.unsplash.com/photo-1542273917363-3b1817f69a2d)' },
   { name: 'Pastel Sky', background: 'url(https://images.unsplash.com/photo-1517483000871-1dbf64a6e1c6)' },
   { name: 'Gentle Sunrise', background: 'url(https://images.unsplash.com/photo-1566228015668-4c45dbc4e2f5)' },
+  { name: 'Lush Green', background: 'url(https://images.unsplash.com/photo-1527254432336-72d0c3ad1942)' },
+];
+
+const macOSPresets: { name: string; background: string }[] = [
+  { name: 'Big Sur 2', background: 'url(https://iqeomzolnxhweqyhrnsg.supabase.co/storage/v1/object/public/sqlilot/abstract/macos-big-sur-apple-layers-fluidic-colorful-wwdc-stock-3840x2160-1455.jpg)' },
+  { name: 'Monterey', background: 'url(https://iqeomzolnxhweqyhrnsg.supabase.co/storage/v1/object/public/sqlilot/abstract/macos-monterey-stock-black-dark-mode-layers-5k-3840x2160-5889.jpg)' },
+  { name: 'Monterey 2', background: 'url(https://iqeomzolnxhweqyhrnsg.supabase.co/storage/v1/object/public/sqlilot/abstract/macos-monterey-wwdc-21-stock-5k-3840x2160-5584.jpg)' },
+  { name: 'Sequoia Blue Orage', background: 'url(https://iqeomzolnxhweqyhrnsg.supabase.co/storage/v1/object/public/sqlilot/abstract/sequoia-blue-orange.jpg)' },
+  { name: 'Sequoia Blue', background: 'url(https://iqeomzolnxhweqyhrnsg.supabase.co/storage/v1/object/public/sqlilot/abstract/sequoia-blue.jpg)' },
+  { name: 'Sonama Clouds', background: 'url(https://iqeomzolnxhweqyhrnsg.supabase.co/storage/v1/object/public/sqlilot/abstract/sonoma-clouds.jpg)' },
+  { name: 'Sonama Evening', background: 'url(https://iqeomzolnxhweqyhrnsg.supabase.co/storage/v1/object/public/sqlilot/abstract/sonoma-evening.jpg)' },
+  { name: 'Sonama from above', background: 'url(https://iqeomzolnxhweqyhrnsg.supabase.co/storage/v1/object/public/sqlilot/abstract/sonoma-from-above.jpg)' },
+  { name: 'Sonama River', background: 'url(https://iqeomzolnxhweqyhrnsg.supabase.co/storage/v1/object/public/sqlilot/abstract/sonoma-river.jpg)' },
 ];
 
 const gradientPresets: { name: string; background: string }[] = [
@@ -43,7 +56,7 @@ const gradientPresets: { name: string; background: string }[] = [
 const App: React.FC = () => {
   const [state, setState] = useState<EditorState>({
     screenshot: null,
-    background: gradientPresets[0].background,
+    background: macOSPresets[0].background,
     padding: 10,  // This value is fine, as it's within the new range
     borderRadius: 8,
     shadow: 30,
@@ -111,7 +124,7 @@ const App: React.FC = () => {
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: state.activeTab === 'macOS' ? '#000' : 'transparent',
+    backgroundColor: state.activeTab !== 'Gradients' ? '#000' : 'transparent',
     filter: `blur(${state.blur}px)`,
   };
 
@@ -153,6 +166,16 @@ const App: React.FC = () => {
     setImageSize({ width: img.width, height: img.height });
   };
 
+  const handleTabChange = (newTab: 'macOS' | 'Gradients' | 'Wallpapers') => {
+    setState(prev => ({
+      ...prev,
+      activeTab: newTab,
+      background: newTab === 'macOS' ? macOSPresets[0].background :
+                  newTab === 'Gradients' ? gradientPresets[0].background :
+                  wallpapers[0].background
+    }));
+  };
+
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center p-8">
       <div className="bg-white rounded-lg shadow-lg p-8 w-full max-w-7xl">
@@ -166,7 +189,7 @@ const App: React.FC = () => {
               style={containerStyle}
             >
               <div style={backgroundStyle}>
-                {state.activeTab === 'macOS' ? (
+                {state.activeTab === 'macOS' || state.activeTab === 'Wallpapers' ? (
                   <img src={state.background.replace('url(', '').replace(')', '')} alt="Wallpaper" style={wallpaperStyle} />
                 ) : (
                   <div style={{ ...wallpaperStyle, background: state.background }} />
@@ -194,24 +217,32 @@ const App: React.FC = () => {
             <div className="mb-6">
               <div className="flex mb-4 !rounded-sm">
                 <button
+                  className={`flex-1 py-1 px-2 text-sm text-center ${state.activeTab === 'Gradients' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+                  onClick={() => handleTabChange('Gradients')}
+                >
+                  Gradients
+                </button>
+                <button
                   className={`flex-1 py-1 px-2 text-sm text-center ${state.activeTab === 'macOS' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
-                  onClick={() => setState(prev => ({ ...prev, activeTab: 'macOS' }))}
+                  onClick={() => handleTabChange('macOS')}
                 >
                   macOS
                 </button>
                 <button
-                  className={`flex-1 py-1 px-2 text-sm text-center ${state.activeTab === 'Gradients' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
-                  onClick={() => setState(prev => ({ ...prev, activeTab: 'Gradients' }))}
+                  className={`flex-1 py-1 px-2 text-sm text-center ${state.activeTab === 'Wallpapers' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+                  onClick={() => handleTabChange('Wallpapers')}
                 >
-                  Gradients
+                  Wallpapers
                 </button>
               </div>
               <div className="overflow-x-auto">
-                <div className="flex space-x-2" style={{ width: state.activeTab === 'macOS' ? '600px' : '800px' }}>
-                  {(state.activeTab === 'macOS' ? macOSPresets : gradientPresets).map((preset, index) => (
+                <div className="flex space-x-2" style={{ width: state.activeTab === 'Gradients' ? '500px' : '600px' }}>
+                  {(state.activeTab === 'macOS' ? macOSPresets :
+                    state.activeTab === 'Gradients' ? gradientPresets :
+                    wallpapers).map((preset, index) => (
                     <button
                       key={index}
-                      className="flex-shrink-0 w-16 h-16 rounded bg-cover bg-center"
+                      className="flex-shrink-0 w-12 h-12 rounded bg-cover bg-center"
                       style={{ backgroundImage: preset.background }}
                       onClick={() => setState((prev) => ({ ...prev, background: preset.background }))}
                     >
