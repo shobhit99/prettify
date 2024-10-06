@@ -97,7 +97,7 @@ const App: React.FC = () => {
   const containerStyle = {
     width: `${state.containerSize}%`,
     maxWidth: '1280px',
-    height: '500px',
+    height: '600px',
     position: 'relative' as const,
     overflow: 'hidden',
   };
@@ -131,6 +131,7 @@ const App: React.FC = () => {
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
+    borderRadius: `18px !important`,
   };
 
   const imageContainerStyle = {
@@ -158,10 +159,10 @@ const App: React.FC = () => {
         <h1 className="text-3xl font-bold mb-6 text-center">Screenshot Editor</h1>
         
         <div className="flex flex-wrap -mx-4">
-          <div className="w-full lg:w-2/3 px-4 mb-4 flex justify-center">
+          <div className="w-full lg:w-3/4 px-4 mb-4 flex justify-center">
             <div
               ref={screenshotRef}
-              className="relative overflow-hidden"
+              className="relative overflow-hidden rounded-lg"
               style={containerStyle}
             >
               <div style={backgroundStyle}>
@@ -189,41 +190,37 @@ const App: React.FC = () => {
               </div>
             </div>
           </div>
-          <div className="w-full lg:w-1/3 px-4">
+          <div className="w-full lg:w-1/4 px-4">
             <div className="mb-6">
-              <div className="flex mb-4">
+              <div className="flex mb-4 !rounded-sm">
                 <button
-                  className={`flex-1 py-2 px-4 text-center ${state.activeTab === 'macOS' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+                  className={`flex-1 py-1 px-2 text-sm text-center ${state.activeTab === 'macOS' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
                   onClick={() => setState(prev => ({ ...prev, activeTab: 'macOS' }))}
                 >
                   macOS
                 </button>
                 <button
-                  className={`flex-1 py-2 px-4 text-center ${state.activeTab === 'Gradients' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+                  className={`flex-1 py-1 px-2 text-sm text-center ${state.activeTab === 'Gradients' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
                   onClick={() => setState(prev => ({ ...prev, activeTab: 'Gradients' }))}
                 >
                   Gradients
                 </button>
               </div>
               <div className="overflow-x-auto">
-                <div className="flex space-x-2" style={{ width: state.activeTab === 'macOS' ? '800px' : '1100px' }}>
+                <div className="flex space-x-2" style={{ width: state.activeTab === 'macOS' ? '600px' : '800px' }}>
                   {(state.activeTab === 'macOS' ? macOSPresets : gradientPresets).map((preset, index) => (
                     <button
                       key={index}
-                      className="flex-shrink-0 w-24 h-24 rounded bg-cover bg-center"
+                      className="flex-shrink-0 w-16 h-16 rounded bg-cover bg-center"
                       style={{ backgroundImage: preset.background }}
                       onClick={() => setState((prev) => ({ ...prev, background: preset.background }))}
                     >
-                      <span className="bg-black bg-opacity-50 text-white px-2 py-1 rounded text-xs">
-                        {preset.name}
-                      </span>
                     </button>
                   ))}
                 </div>
               </div>
             </div>
             <div className="mb-6">
-              <h2 className="text-xl font-semibold mb-2">Customization</h2>
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center">
@@ -246,7 +243,7 @@ const App: React.FC = () => {
                   </label>
                   <input
                     type="range"
-                    min="10"
+                    min="5"
                     max="30"
                     value={state.padding}
                     onChange={(e) => setState((prev) => ({ ...prev, padding: Number(e.target.value) }))}
