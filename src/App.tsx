@@ -11,6 +11,7 @@ interface EditorState {
   shadowIntensity: number;
   containerSize: number;
   activeTab: 'macOS' | 'Gradients';
+  blur: number;
 }
 
 const macOSPresets: { name: string; background: string }[] = [
@@ -49,6 +50,7 @@ const App: React.FC = () => {
     shadowIntensity: 0.3,
     containerSize: 100,
     activeTab: 'Gradients',
+    blur: 0,
   });
 
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -110,6 +112,7 @@ const App: React.FC = () => {
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: state.activeTab === 'macOS' ? '#000' : 'transparent',
+    filter: `blur(${state.blur}px)`,
   };
 
   const wallpaperStyle = {
@@ -275,6 +278,17 @@ const App: React.FC = () => {
                     step="0.01"
                     value={state.shadowIntensity}
                     onChange={(e) => setState((prev) => ({ ...prev, shadowIntensity: Number(e.target.value) }))}
+                    className="w-full"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Background Blur</label>
+                  <input
+                    type="range"
+                    min="0"
+                    max="20"
+                    value={state.blur}
+                    onChange={(e) => setState((prev) => ({ ...prev, blur: Number(e.target.value) }))}
                     className="w-full"
                   />
                 </div>
