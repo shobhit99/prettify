@@ -290,7 +290,7 @@ const App: React.FC = () => {
                 </button>
               </div>
               <div className="overflow-x-auto">
-                <div className="flex space-x-2" style={{ width: state.activeTab === 'Gradients' ? '500px' : '600px' }}>
+                <div className="flex space-x-2 border border-gray-300 rounded-md p-2" style={{ width: state.activeTab === 'Gradients' ? '500px' : '600px' }}>
                   {(state.activeTab === 'macOS' ? macOSPresets :
                     state.activeTab === 'Gradients' ? gradientPresets :
                     wallpapers).map((preset, index) => (
@@ -306,7 +306,7 @@ const App: React.FC = () => {
               </div>
             </div>
             <div className="mb-6">
-              <div className="space-y-4">
+              <div className="space-y-3">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center">
                     <Maximize className="mr-2" size={16} />
