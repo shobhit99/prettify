@@ -43,10 +43,10 @@ const App: React.FC = () => {
   const [state, setState] = useState<EditorState>({
     screenshot: null,
     background: gradientPresets[0].background,
-    padding: 20,
-    borderRadius: 10,
-    shadow: 20,
-    shadowIntensity: 0.1,
+    padding: 10,  // This value is fine, as it's within the new range
+    borderRadius: 8,
+    shadow: 30,
+    shadowIntensity: 0.3,
     containerSize: 100,
     activeTab: 'Gradients',
   });
@@ -229,8 +229,8 @@ const App: React.FC = () => {
                   <label className="block text-sm font-medium text-gray-700 mb-1">Padding</label>
                   <input
                     type="range"
-                    min="0"
-                    max="20"
+                    min="10"
+                    max="30"  // Changed from 20 to 50
                     value={state.padding}
                     onChange={(e) => setState((prev) => ({ ...prev, padding: Number(e.target.value) }))}
                     className="w-full"
