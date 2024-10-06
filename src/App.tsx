@@ -9,44 +9,46 @@ interface EditorState {
   borderRadius: number;
   shadow: number;
   shadowIntensity: number;
-  showMacOSMockup: boolean;
   containerSize: number;
   activeTab: 'macOS' | 'Gradients';
 }
 
 const macOSPresets: { name: string; background: string }[] = [
-  { name: 'Big Sur', background: 'url(https://images.unsplash.com/photo-1603649304824-2e8aa3b2b7e4)' },
-  { name: 'Catalina', background: 'url(https://images.unsplash.com/photo-1568345889086-3d8f1a74a2e3)' },
-  { name: 'Mojave', background: 'url(https://images.unsplash.com/photo-1541280910158-c4e14f9c94a3)' },
-  { name: 'High Sierra', background: 'url(https://images.unsplash.com/photo-1506744038136-46273834b3fb)' },
   { name: 'Sierra', background: 'url(https://images.unsplash.com/photo-1511300636408-a63a89df3482)' },
-  { name: 'El Capitan', background: 'url(https://images.unsplash.com/photo-1469474968028-56623834b3fe)' },
-  { name: 'Yosemite', background: 'url(https://images.unsplash.com/photo-1426604966848-d7adac402bff)' },
-  { name: 'Mavericks', background: 'url(https://images.unsplash.com/photo-1472214103451-9374bd1c798e)' },
+  { name: 'Ocean Mist', background: 'url(https://images.unsplash.com/photo-1505144808419-1957a94ca61e)' },
+  { name: 'Desert Dunes', background: 'url(https://images.unsplash.com/photo-1547234935-80c7145ec969)' },
+  { name: 'Smooth Waves', background: 'url(https://images.unsplash.com/photo-1505820013142-f86a3439c5b2)' },
+  { name: 'Cloudy Peaks', background: 'url(https://images.unsplash.com/photo-1536244636800-a3f74db0f3cf)' },
+  { name: 'Misty Forest', background: 'url(https://images.unsplash.com/photo-1542273917363-3b1817f69a2d)' },
+  { name: 'Pastel Sky', background: 'url(https://images.unsplash.com/photo-1517483000871-1dbf64a6e1c6)' },
+  { name: 'Gentle Sunrise', background: 'url(https://images.unsplash.com/photo-1566228015668-4c45dbc4e2f5)' },
 ];
 
 const gradientPresets: { name: string; background: string }[] = [
-  { name: 'Sunset', background: 'linear-gradient(to right, #FF512F, #F4D03F, #DD2476)' },
-  { name: 'Ocean', background: 'linear-gradient(to right, #1A2980, #26D0CE, #2C3E50)' },
-  { name: 'Meadow', background: 'linear-gradient(to right, #16A085, #F4D03F, #4CAF50)' },
-  { name: 'Lavender', background: 'linear-gradient(to right, #834d9b, #D04ED6, #9A48D0)' },
-  { name: 'Cherry', background: 'linear-gradient(to right, #EB3349, #F45C43, #FF8C00)' },
-  { name: 'Horizon', background: 'linear-gradient(to right, #003973, #E5E5BE, #FF6B6B)' },
-  { name: 'Stellar', background: 'linear-gradient(to right, #7474BF, #348AC7, #E100FF)' },
-  { name: 'Aurora', background: 'linear-gradient(to right, #1FE4F5, #3FBAFE, #2BC0E4)' },
+  { name: 'Purple Blend', background: 'linear-gradient(43deg, #4158D0 0%, #C850C0 46%, #FFCC70 100%)' },
+  { name: 'Ocean Blue', background: 'linear-gradient(160deg, #0093E9 0%, #80D0C7 100%)' },
+  { name: 'Lavender Haze', background: 'linear-gradient(62deg, #8EC5FC 0%, #E0C3FC 100%)' },
+  { name: 'Peach Sunset', background: 'linear-gradient(62deg, #FBAB7E 0%, #F7CE68 100%)' },
+  { name: 'Lime Light', background: 'linear-gradient(45deg, #85FFBD 0%, #FFFB7D 100%)' },
+  { name: 'Pink Lemonade', background: 'linear-gradient(45deg, #FBDA61 0%, #FF5ACD 100%)' },
+  { name: 'Ocean Blue', background: 'linear-gradient(to right, #2E3192, #1BFFFF)' },
+  { name: 'Sanguine', background: 'linear-gradient(to right, #D4145A, #FBB03B)' },
+  { name: 'Lusty Lavender', background: 'linear-gradient(to right, #662D8C, #ED1E79)' },
+  { name: 'Emerald Water', background: 'linear-gradient(to right, #348F50, #56B4D3)' },
+  { name: 'Lemon Twist', background: 'linear-gradient(to right, #3CA55C, #B5AC49)' },
+  { name: 'Frozen Berry', background: 'linear-gradient(to right, #5C258D, #4389A2)' },
 ];
 
 const App: React.FC = () => {
   const [state, setState] = useState<EditorState>({
     screenshot: null,
-    background: gradientPresets[0].background, // Set a default gradient
-    padding: 0,
+    background: gradientPresets[0].background,
+    padding: 20,
     borderRadius: 10,
     shadow: 20,
     shadowIntensity: 0.1,
-    showMacOSMockup: false,
     containerSize: 100,
-    activeTab: 'Gradients', // Set the default tab to Gradients
+    activeTab: 'Gradients',
   });
 
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -85,7 +87,7 @@ const App: React.FC = () => {
   const containerStyle = {
     width: `${state.containerSize}%`,
     maxWidth: '1280px',
-    height: '600px',
+    height: '500px',
     position: 'relative' as const,
     overflow: 'hidden',
   };
@@ -134,17 +136,6 @@ const App: React.FC = () => {
     objectFit: 'contain' as const,
   };
 
-  const MacOSMockup: React.FC<{ width: number }> = ({ width }) => (
-    <div 
-      className="absolute top-0 left-0 right-0 bg-gray-200 rounded-t-lg p-2 flex items-center space-x-2"
-      style={{ width: `${width}px` }}
-    >
-      <div className="w-3 h-3 rounded-full bg-red-500"></div>
-      <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
-      <div className="w-3 h-3 rounded-full bg-green-500"></div>
-    </div>
-  );
-
   const handleImageLoad = (event: React.SyntheticEvent<HTMLImageElement>) => {
     const img = event.currentTarget;
     setImageSize({ width: img.width, height: img.height });
@@ -156,7 +147,7 @@ const App: React.FC = () => {
         <h1 className="text-3xl font-bold mb-6 text-center">Screenshot Editor</h1>
         
         <div className="flex flex-wrap -mx-4">
-          <div className="w-full lg:w-2/3 px-4 mb-4">
+          <div className="w-full lg:w-2/3 px-4 mb-4 flex justify-center">
             <div
               ref={screenshotRef}
               className="relative overflow-hidden"
@@ -179,7 +170,6 @@ const App: React.FC = () => {
                         style={imageStyle}
                         onLoad={handleImageLoad}
                       />
-                      {state.showMacOSMockup && <MacOSMockup width={imageSize.width} />}
                     </div>
                   </div>
                 ) : (
@@ -279,18 +269,6 @@ const App: React.FC = () => {
                     onChange={(e) => setState((prev) => ({ ...prev, shadowIntensity: Number(e.target.value) }))}
                     className="w-full"
                   />
-                </div>
-                <div className="flex items-center">
-                  <input
-                    type="checkbox"
-                    id="macOSMockup"
-                    checked={state.showMacOSMockup}
-                    onChange={(e) => setState((prev) => ({ ...prev, showMacOSMockup: e.target.checked }))}
-                    className="mr-2"
-                  />
-                  <label htmlFor="macOSMockup" className="text-sm font-medium text-gray-700">
-                    Show macOS Mockup
-                  </label>
                 </div>
               </div>
             </div>
