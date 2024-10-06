@@ -208,13 +208,13 @@ const App: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center p-8">
       <div className="bg-white rounded-lg shadow-lg p-8 w-full max-w-7xl">
-        <h1 className="text-3xl font-bold mb-6 text-center">Screenshot Editor</h1>
+        <h1 className="text-3xl font-bold mb-6 text-center">Supershots</h1>
         
         <div className="flex flex-wrap -mx-4">
-          <div className="w-full lg:w-3/4 px-4 mb-4 flex justify-center">
+          <div className="w-full lg:w-3/4 px-4 mb-4 flex flex-col items-center">
             <div
               ref={screenshotRef}
-              className="relative overflow-hidden rounded-lg"
+              className="relative overflow-hidden rounded-lg mb-4"
               style={containerStyle}
             >
               <div style={backgroundStyle}>
@@ -240,6 +240,31 @@ const App: React.FC = () => {
                   <p className="text-gray-500 text-center">Your screenshot will appear here</p>
                 )}
               </div>
+            </div>
+            <div className="flex space-x-3">
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleFileUpload}
+                ref={fileInputRef}
+                className="hidden"
+              />
+              <button
+                onClick={() => fileInputRef.current?.click()}
+                className="bg-purple-500 hover:bg-purple-600 text-white font-medium py-1.5 px-3 rounded flex items-center text-sm"
+              >
+                <Upload className="mr-1.5" size={16} />
+                Upload Image
+              </button>
+              {state.screenshot && (
+                <button
+                  onClick={downloadImage}
+                  className="bg-green-500 hover:bg-green-600 text-white font-medium py-1.5 px-3 rounded flex items-center text-sm"
+                >
+                  <Download className="mr-1.5" size={16} />
+                  Download Image
+                </button>
+              )}
             </div>
           </div>
           <div className="w-full lg:w-1/4 px-4">
@@ -370,33 +395,6 @@ const App: React.FC = () => {
               </div>
             </div>
           </div>
-        </div>
-
-        <div className="flex justify-center space-x-4 mt-6">
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handleFileUpload}
-            ref={fileInputRef}
-            className="hidden"
-          />
-          <button
-            onClick={() => fileInputRef.current?.click()}
-            className="bg-purple-500 hover:bg-purple-600 text-white font-bold py-2 px-4 rounded flex items-center"
-          >
-            <Upload className="mr-2" size={20} />
-            Upload Image
-          </button>
-          <button
-            onClick={downloadImage}
-            disabled={!state.screenshot}
-            className={`bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded flex items-center ${
-              !state.screenshot && 'opacity-50 cursor-not-allowed'
-            }`}
-          >
-            <Download className="mr-2" size={20} />
-            Download Image
-          </button>
         </div>
       </div>
     </div>
