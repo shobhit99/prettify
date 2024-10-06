@@ -56,8 +56,8 @@ const gradientPresets: { name: string; background: string }[] = [
 const App: React.FC = () => {
   const [state, setState] = useState<EditorState>({
     screenshot: null,
-    background: macOSPresets[0].background,
-    padding: 10,  // This value is fine, as it's within the new range
+    background: gradientPresets[0].background,  // Change this line
+    padding: 10,
     borderRadius: 8,
     shadow: 30,
     shadowIntensity: 0.3,
