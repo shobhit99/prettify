@@ -1,5 +1,5 @@
 import React, { useState, useRef, useCallback } from 'react';
-import html2canvas from 'html2canvas';
+import { toPng } from 'html-to-image';
 import { Download, Upload } from 'lucide-react';
 
 interface EditorState {
@@ -69,18 +69,26 @@ const App: React.FC = () => {
 
   const downloadImage = useCallback(() => {
     if (screenshotRef.current) {
-      const scale = 2;
-      html2canvas(screenshotRef.current, {
-        scale: scale,
-        useCORS: true,
-        allowTaint: true,
-        backgroundColor: null,
-      }).then((canvas) => {
-        const link = document.createElement('a');
-        link.href = canvas.toDataURL('image/png');
-        link.download = 'edited_screenshot.png';
-        link.click();
-      });
+      toPng(screenshotRef.current, {
+        cacheBust: true,
+        pixelRatio: 2,
+        filter: (node) => {
+          // Exclude problematic stylesheets
+          if (node.tagName === 'LINK' && node.getAttribute('rel') === 'stylesheet') {
+            return false;
+          }
+          return true;
+        },
+      })
+        .then((dataUrl) => {
+          const link = document.createElement('a');
+          link.download = 'edited_screenshot.png';
+          link.href = dataUrl;
+          link.click();
+        })
+        .catch((err) => {
+          console.error('Error generating image:', err);
+        });
     }
   }, [state]);
 
