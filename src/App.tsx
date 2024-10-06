@@ -155,8 +155,17 @@ const App: React.FC = () => {
     width: `${state.containerWidth}%`,
     height: `${state.containerHeight}%`,
     maxWidth: '1280px',
-    maxHeight: '720px', // Add a max height to prevent excessive stretching
+    maxHeight: '720px',
     position: 'relative' as const,
+    overflow: 'hidden',
+  };
+
+  const backgroundWrapperStyle = {
+    position: 'absolute' as const,
+    top: '-10px',
+    left: '-10px',
+    right: '-10px',
+    bottom: '-10px',
     overflow: 'hidden',
   };
 
@@ -171,6 +180,7 @@ const App: React.FC = () => {
     alignItems: 'center',
     backgroundColor: state.activeTab !== 'Gradients' ? '#000' : 'transparent',
     filter: `blur(${state.blur}px)`,
+    transform: 'scale(1.1)', // Slightly scale up the background to cover blur edges
   };
 
   const wallpaperStyle = {
@@ -235,12 +245,14 @@ const App: React.FC = () => {
               className="relative overflow-hidden rounded-lg mb-4"
               style={containerStyle}
             >
-              <div style={backgroundStyle}>
-                {state.activeTab === 'macOS' || state.activeTab === 'Wallpapers' ? (
-                  <img src={state.background.replace('url(', '').replace(')', '')} alt="Wallpaper" style={wallpaperStyle} />
-                ) : (
-                  <div style={{ ...wallpaperStyle, background: state.background }} />
-                )}
+              <div style={backgroundWrapperStyle}>
+                <div style={backgroundStyle}>
+                  {state.activeTab === 'macOS' || state.activeTab === 'Wallpapers' ? (
+                    <img src={state.background.replace('url(', '').replace(')', '')} alt="Wallpaper" style={wallpaperStyle} />
+                  ) : (
+                    <div style={{ ...wallpaperStyle, background: state.background }} />
+                  )}
+                </div>
               </div>
               <div style={contentStyle}>
                 {state.screenshot ? (
