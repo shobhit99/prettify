@@ -1,6 +1,8 @@
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { toPng } from 'html-to-image';
-import { Download, Upload, Maximize, PanelTop, CornerUpRight, Cloud, Sun, SunDim } from 'lucide-react';
+import { Download, Upload, Maximize, PanelTop, CornerUpRight, Cloud, Sun, SunDim, Twitter } from 'lucide-react';
+import confetti from 'canvas-confetti';
+import Shobhit from '../public/shobhit.png';
 
 interface EditorState {
   screenshot: string | null;
@@ -24,7 +26,7 @@ const wallpapers: { name: string; background: string }[] = [
   { name: 'Misty Forest', background: 'url(https://images.unsplash.com/photo-1542273917363-3b1817f69a2d)' },
   { name: 'Pastel Sky', background: 'url(https://images.unsplash.com/photo-1517483000871-1dbf64a6e1c6)' },
   { name: 'Gentle Sunrise', background: 'url(https://images.unsplash.com/photo-1566228015668-4c45dbc4e2f5)' },
-  { name: 'Lush Green', background: 'url(https://images.unsplash.com/photo-1527254432336-72d0c3ad1942)' },
+  { name: 'Lush Green', background: 'url(https://images.unsplash.com/photo-1527254436800-a3f74db0f3cf)' },
 ];
 
 const macOSPresets: { name: string; background: string }[] = [
@@ -74,11 +76,22 @@ const App: React.FC = () => {
   const screenshotRef = useRef<HTMLDivElement>(null);
 
   const [imageSize, setImageSize] = useState({ width: 0, height: 0 });
+  const [showModal, setShowModal] = useState(false);
+
+  useEffect(() => {
+    if (showModal) {
+      confetti({
+        particleCount: 100,
+        spread: 70,
+        origin: { y: 0.6 }
+      });
+    }
+  }, [showModal]);
 
   const adjustImageSettings = (imgWidth: number, imgHeight: number) => {
     const containerHeight = CONTAINER_FIXED_HEIGHT;
     const containerWidth = (containerHeight * imgWidth) / imgHeight;
-    
+
     if (containerWidth > 600 || imgHeight > containerHeight) {
       // Image is larger than the container, set border radius to 50% of the slider max
       setState(prev => ({
@@ -130,6 +143,7 @@ const App: React.FC = () => {
           link.download = 'edited_screenshot.png';
           link.href = dataUrl;
           link.click();
+          setShowModal(true); // Show the modal after download
         })
         .catch((err) => {
           console.error('Error generating image:', err);
@@ -203,8 +217,8 @@ const App: React.FC = () => {
       ...prev,
       activeTab: newTab,
       background: newTab === 'macOS' ? macOSPresets[0].background :
-                  newTab === 'Gradients' ? gradientPresets[0].background :
-                  wallpapers[0].background
+        newTab === 'Gradients' ? gradientPresets[0].background :
+          wallpapers[0].background
     }));
   };
 
@@ -297,15 +311,15 @@ const App: React.FC = () => {
                 <div className="flex space-x-2 border border-gray-300 rounded-md p-2" style={{ width: state.activeTab === 'Gradients' ? '500px' : '600px' }}>
                   {(state.activeTab === 'macOS' ? macOSPresets :
                     state.activeTab === 'Gradients' ? gradientPresets :
-                    wallpapers).map((preset, index) => (
-                    <button
-                      key={index}
-                      className="flex-shrink-0 w-12 h-12 rounded bg-cover bg-center"
-                      style={{ backgroundImage: preset.background }}
-                      onClick={() => setState((prev) => ({ ...prev, background: preset.background }))}
-                    >
-                    </button>
-                  ))}
+                      wallpapers).map((preset, index) => (
+                        <button
+                          key={index}
+                          className="flex-shrink-0 w-12 h-12 rounded bg-cover bg-center"
+                          style={{ backgroundImage: preset.background }}
+                          onClick={() => setState((prev) => ({ ...prev, background: preset.background }))}
+                        >
+                        </button>
+                      ))}
                 </div>
               </div>
             </div>
@@ -415,6 +429,37 @@ const App: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {showModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-8 max-w-md shadow-lg transform transition-all duration-300 ease-in-out">
+            <img src={"/images/shobhit.png"} alt="Logo" className="mb-4 mx-auto w-[100px] h-[120px]" />
+            <h2 className="text-3xl font-bold mb-4 text-center text-purple-600">Thank you!</h2>
+            <p className="mb-6 text-gray-700 text-center">I hope you enjoyed using prettify.pro!</p>
+            <div className="flex flex-col items-center space-y-4 mb-6">
+              <button
+                onClick={() => window.open('https://twitter.com/intent/follow?screen_name=shobhitic', '_blank')}
+                className="bg-black hover:bg-gray-800 text-white font-medium py-2 px-6 rounded-md flex items-center transition duration-300 ease-in-out transform hover:scale-105"
+              >
+                <span className="mr-2">Follow me on</span>
+                <svg xmlns="http://www.w3.org/2000/svg" className="mr-2" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                </svg>
+              </button>
+              <button
+                onClick={() => window.open('https://shipfa.st/?via=shobhit', '_blank')}
+                className="bg-black hover:bg-gray-800 text-white font-medium py-2 px-6 rounded-md flex items-center transition duration-300 ease-in-out transform hover:scale-105"
+              >
+                <span className="mr-2">⚡ Ship My Startup Fast</span>
+              </button>
+              <a href="https://www.buymeacoffee.com/shobhit99" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" className='!h-10' /></a>
+            </div>
+            <div className="flex justify-between">
+
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
