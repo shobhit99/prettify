@@ -9,7 +9,8 @@ interface EditorState {
   borderRadius: number;
   shadow: number;
   shadowIntensity: number;
-  containerSize: number;
+  containerWidth: number;
+  containerHeight: number;
   activeTab: 'macOS' | 'Gradients' | 'Wallpapers';
   blur: number;
 }
@@ -63,7 +64,8 @@ const App: React.FC = () => {
     borderRadius: 8,
     shadow: 30,
     shadowIntensity: 0.3,
-    containerSize: 100,
+    containerWidth: 100,
+    containerHeight: 100,
     activeTab: 'Gradients',
     blur: 0,
   });
@@ -136,9 +138,10 @@ const App: React.FC = () => {
   }, [state]);
 
   const containerStyle = {
-    width: `${state.containerSize}%`,
+    width: `${state.containerWidth}%`,
+    height: `${state.containerHeight}%`,
     maxWidth: '1280px',
-    height: `${CONTAINER_FIXED_HEIGHT}px`,
+    maxHeight: '720px', // Add a max height to prevent excessive stretching
     position: 'relative' as const,
     overflow: 'hidden',
   };
@@ -311,14 +314,28 @@ const App: React.FC = () => {
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center">
                     <Maximize className="mr-2" size={16} />
-                    Container Size
+                    Container Width
                   </label>
                   <input
                     type="range"
                     min="35"
                     max="100"
-                    value={state.containerSize}
-                    onChange={(e) => setState((prev) => ({ ...prev, containerSize: Number(e.target.value) }))}
+                    value={state.containerWidth}
+                    onChange={(e) => setState((prev) => ({ ...prev, containerWidth: Number(e.target.value) }))}
+                    className="w-full"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center">
+                    <Maximize className="mr-2" size={16} />
+                    Container Height
+                  </label>
+                  <input
+                    type="range"
+                    min="35"
+                    max="100"
+                    value={state.containerHeight}
+                    onChange={(e) => setState((prev) => ({ ...prev, containerHeight: Number(e.target.value) }))}
                     className="w-full"
                   />
                 </div>
