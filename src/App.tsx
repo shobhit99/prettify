@@ -2,7 +2,6 @@ import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { toPng } from 'html-to-image';
 import { Download, Upload, Maximize, PanelTop, CornerUpRight, Cloud, Sun, SunDim, Twitter, X } from 'lucide-react';
 import confetti from 'canvas-confetti';
-import Shobhit from '../public/shobhit.png';
 
 interface EditorState {
   screenshot: string | null;
