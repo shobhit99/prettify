@@ -52,6 +52,8 @@ const App: React.FC = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const screenshotRef = useRef<HTMLDivElement>(null);
 
+  const [imageSize, setImageSize] = useState({ width: 0, height: 0 });
+
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
@@ -118,21 +120,35 @@ const App: React.FC = () => {
     alignItems: 'center',
   };
 
+  const imageContainerStyle = {
+    position: 'relative' as const,
+    display: 'inline-block',
+    borderRadius: `${state.borderRadius}px`,
+    overflow: 'hidden',
+    boxShadow: `0 ${state.shadow}px ${state.shadow * 2}px rgba(0,0,0,${state.shadowIntensity})`,
+  };
+
   const imageStyle = {
     maxWidth: '100%',
     maxHeight: '100%',
     objectFit: 'contain' as const,
-    borderRadius: `${state.borderRadius}px`,
-    boxShadow: `0 ${state.shadow}px ${state.shadow * 2}px rgba(0,0,0,${state.shadowIntensity})`,
   };
 
-  const MacOSMockup: React.FC = () => (
-    <div className="absolute top-0 left-0 right-0 bg-gray-200 rounded-t-lg p-2 flex items-center space-x-2">
+  const MacOSMockup: React.FC<{ width: number }> = ({ width }) => (
+    <div 
+      className="absolute top-0 left-0 right-0 bg-gray-200 rounded-t-lg p-2 flex items-center space-x-2"
+      style={{ width: `${width}px` }}
+    >
       <div className="w-3 h-3 rounded-full bg-red-500"></div>
       <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
       <div className="w-3 h-3 rounded-full bg-green-500"></div>
     </div>
   );
+
+  const handleImageLoad = (event: React.SyntheticEvent<HTMLImageElement>) => {
+    const img = event.currentTarget;
+    setImageSize({ width: img.width, height: img.height });
+  };
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center p-8">
@@ -156,17 +172,15 @@ const App: React.FC = () => {
               <div style={contentStyle}>
                 {state.screenshot ? (
                   <div className="relative flex items-center justify-center" style={{ width: '100%', height: '100%' }}>
-                    <img
-                      src={state.screenshot}
-                      alt="Screenshot"
-                      style={imageStyle}
-                    />
-                    {state.showMacOSMockup && (
-                      <div className="absolute inset-0 flex flex-col" style={{ borderRadius: `${state.borderRadius}px` }}>
-                        <MacOSMockup />
-                        <div className="flex-grow"></div>
-                      </div>
-                    )}
+                    <div style={imageContainerStyle}>
+                      <img
+                        src={state.screenshot}
+                        alt="Screenshot"
+                        style={imageStyle}
+                        onLoad={handleImageLoad}
+                      />
+                      {state.showMacOSMockup && <MacOSMockup width={imageSize.width} />}
+                    </div>
                   </div>
                 ) : (
                   <p className="text-gray-500 text-center">Your screenshot will appear here</p>
