@@ -7,7 +7,7 @@
     "dev": "vite --port 8080",
     "build": "tsc && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview --port 8080",
+    "preview": "vite preview --port 8080 --host",
     "prod": "npm run build && npm run preview"
   },
   "dependencies": {
