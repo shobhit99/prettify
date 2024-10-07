@@ -2,6 +2,7 @@ import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { toPng } from 'html-to-image';
 import { Download, Upload, Maximize, PanelTop, CornerUpRight, Cloud, Sun, SunDim, Twitter, X } from 'lucide-react';
 import confetti from 'canvas-confetti';
+import ProductHuntBadge from './ProductHuntBadge';
 
 interface EditorState {
   screenshot: string | null;
@@ -232,11 +233,15 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center p-8">
+    <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center p-8 relative">
       <h1 className="text-center mb-8">
         <span className="pacifico-regular text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-500 via-violet-500 to-pink-500 [text-shadow:0_0_rgba(0,0,0,0.1)] pl-1">prettify.pro</span>
       </h1>
-      <div className="bg-white rounded-lg shadow-lg p-8 w-full max-w-7xl">
+      <div id="mainapp" className="bg-white rounded-lg shadow-lg p-8 w-full max-w-7xl relative">
+        {/* Product Hunt badge positioned above mainapp */}
+        <div className="absolute -top-16 right-0">
+          <ProductHuntBadge />
+        </div>
         <div className="flex flex-wrap -mx-4">
           <div className="w-full lg:w-3/4 px-4 mb-4 flex flex-col items-center">
             <div
