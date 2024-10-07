@@ -78,6 +78,17 @@ const App: React.FC = () => {
   const [imageSize, setImageSize] = useState({ width: 0, height: 0 });
   const [showModal, setShowModal] = useState(false);
 
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   useEffect(() => {
     if (showModal) {
       confetti({
@@ -153,9 +164,9 @@ const App: React.FC = () => {
 
   const containerStyle = {
     width: `${state.containerWidth}%`,
-    height: `${state.containerHeight}%`,
-    maxWidth: '1280px',
-    maxHeight: '720px',
+    height: isMobile ? `${Math.max(250, Math.min(state.containerHeight * 5, 400))}px` : `${state.containerHeight}%`,
+    maxWidth: isMobile ? '100%' : '1280px',
+    maxHeight: isMobile ? '400px' : '720px',
     position: 'relative' as const,
     overflow: 'hidden',
   };
@@ -233,20 +244,20 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center p-8 relative">
-      <h1 className="text-center mb-8">
-        <span className="pacifico-regular text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-500 via-violet-500 to-pink-500 [text-shadow:0_0_rgba(0,0,0,0.1)] pl-1">prettify.pro</span>
+    <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center p-4 sm:p-8 relative">
+      <h1 className="text-center mb-4 sm:mb-8">
+        <span className="pacifico-regular text-3xl sm:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-500 via-violet-500 to-pink-500 [text-shadow:0_0_rgba(0,0,0,0.1)] pl-1">prettify.pro</span>
       </h1>
-      <div id="mainapp" className="bg-white rounded-lg shadow-lg p-8 w-full max-w-7xl relative">
+      <div id="mainapp" className="bg-white rounded-lg shadow-lg p-4 sm:p-8 w-full max-w-7xl relative">
         {/* Product Hunt badge positioned above mainapp */}
-        <div className="absolute -top-16 right-0">
+        <div className="absolute -top-16 right-0 hidden sm:block">
           <ProductHuntBadge />
         </div>
-        <div className="flex flex-wrap -mx-4">
-          <div className="w-full lg:w-3/4 px-4 mb-4 flex flex-col items-center">
+        <div className="flex flex-wrap -mx-2 sm:-mx-4">
+          <div className="w-full lg:w-3/4 px-2 sm:px-4 mb-4 flex flex-col items-center overflow-x-hidden">
             <div
               ref={screenshotRef}
-              className="relative overflow-hidden rounded-lg mb-4"
+              className="relative overflow-hidden rounded-lg mb-4 w-full"
               style={containerStyle}
             >
               <div style={backgroundWrapperStyle}>
@@ -301,7 +312,7 @@ const App: React.FC = () => {
               )}
             </div>
           </div>
-          <div className="w-full lg:w-1/4 px-4">
+          <div className="w-full lg:w-1/4 px-2 sm:px-4">
             <div className="mb-6">
               <div className="flex mb-4 !rounded-sm">
                 <button
@@ -323,7 +334,7 @@ const App: React.FC = () => {
                   Wallpapers
                 </button>
               </div>
-              <div className="overflow-x-auto">
+              <div className="overflow-x-auto -mx-4 px-4 mb-4"> {/* Added margin-bottom */}
                 <div className="flex space-x-2 border border-gray-300 rounded-md p-2" style={{ width: state.activeTab === 'Gradients' ? '500px' : '600px' }}>
                   {(state.activeTab === 'macOS' ? macOSPresets :
                     state.activeTab === 'Gradients' ? gradientPresets :
@@ -341,6 +352,7 @@ const App: React.FC = () => {
             </div>
             <div className="mb-6">
               <div className="space-y-3">
+                {/* Remove the isMobile condition to show these controls on all devices */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center">
                     <Maximize className="mr-2" size={16} />
@@ -348,7 +360,7 @@ const App: React.FC = () => {
                   </label>
                   <input
                     type="range"
-                    min="35"
+                    min={isMobile ? "70" : "35"}  // Increased minimum value for mobile
                     max="100"
                     value={state.containerWidth}
                     onChange={(e) => setState((prev) => ({ ...prev, containerWidth: Number(e.target.value) }))}
