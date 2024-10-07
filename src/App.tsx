@@ -138,12 +138,27 @@ const App: React.FC = () => {
 
   const downloadImage = useCallback(() => {
     if (screenshotRef.current) {
-      toPng(screenshotRef.current, {
+      const node = screenshotRef.current;
+      
+      // Temporarily adjust styles for capture
+      const originalStyles = {
+        width: node.style.width,
+        height: node.style.height,
+        maxWidth: node.style.maxWidth,
+        maxHeight: node.style.maxHeight,
+      };
+      
+      node.style.width = `${node.offsetWidth}px`;
+      node.style.height = `${node.offsetHeight}px`;
+      node.style.maxWidth = 'none';
+      node.style.maxHeight = 'none';
+
+      toPng(node, {
         cacheBust: true,
         pixelRatio: 2,
-        filter: (node) => {
+        filter: (n) => {
           // Exclude problematic stylesheets
-          if (node.tagName === 'LINK' && node.getAttribute('rel') === 'stylesheet') {
+          if (n.tagName === 'LINK' && n.getAttribute('rel') === 'stylesheet') {
             return false;
           }
           return true;
@@ -158,6 +173,10 @@ const App: React.FC = () => {
         })
         .catch((err) => {
           console.error('Error generating image:', err);
+        })
+        .finally(() => {
+          // Restore original styles
+          Object.assign(node.style, originalStyles);
         });
     }
   }, [state]);
@@ -467,7 +486,7 @@ const App: React.FC = () => {
             >
               <X size={24} />
             </button>
-            <img src={"/images/shobhit.png"} alt="Logo" className="mb-4 mx-auto w-[100px] h-[120px]" />
+            <img src={"https://iqeomzolnxhweqyhrnsg.supabase.co/storage/v1/object/public/sqlilot/shobhit.png"} alt="Logo" className="mb-4 mx-auto w-[100px] h-[120px]" />
             <h2 className="text-3xl font-bold mb-4 text-center text-purple-600">Thank you!</h2>
             <p className="mb-6 text-gray-700 text-center">I hope you enjoyed using prettify.pro!</p>
             <div className="flex flex-col items-center space-y-4 mb-6">
