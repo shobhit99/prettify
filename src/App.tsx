@@ -1,5 +1,5 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react';
-import { toPng } from 'html-to-image';
+import { domToPng } from 'modern-screenshot';
 import { Download, Upload, Maximize, PanelTop, CornerUpRight, Cloud, Sun, SunDim, Twitter, X } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import ProductHuntBadge from './ProductHuntBadge';
@@ -136,6 +136,42 @@ const App: React.FC = () => {
     }
   };
 
+  // Handler for drag over event
+  const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+  };
+
+  // Handler for drop event
+  const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    const files = event.dataTransfer.files;
+    if (files && files[0]) {
+      handleFileUpload({ target: { files } } as React.ChangeEvent<HTMLInputElement>);
+    }
+  };
+
+  // Handler for paste event
+  useEffect(() => {
+    const handlePaste = (event: ClipboardEvent) => {
+      const items = event.clipboardData?.items;
+      if (items) {
+        for (const item of items) {
+          if (item.type.startsWith('image/')) {
+            const file = item.getAsFile();
+            if (file) {
+              handleFileUpload({ target: { files: [file] } } as React.ChangeEvent<HTMLInputElement>);
+            }
+          }
+        }
+      }
+    };
+
+    window.addEventListener('paste', handlePaste);
+    return () => {
+      window.removeEventListener('paste', handlePaste);
+    };
+  }, []);
+
   const downloadImage = useCallback(() => {
     if (screenshotRef.current) {
       const node = screenshotRef.current;
@@ -153,7 +189,8 @@ const App: React.FC = () => {
       node.style.maxWidth = 'none';
       node.style.maxHeight = 'none';
 
-      toPng(node, {
+      // Use modern-screenshot's domToPng instead of toPng
+      domToPng(node, {
         cacheBust: true,
         pixelRatio: 2,
         filter: (n) => {
@@ -183,9 +220,9 @@ const App: React.FC = () => {
 
   const containerStyle = {
     width: `${state.containerWidth}%`,
-    height: isMobile ? `${Math.max(250, Math.min(state.containerHeight * 5, 400))}px` : `${state.containerHeight}%`,
+    height: isMobile ? `${Math.max(500, Math.min(state.containerHeight * 5, 400))}px` : `${state.containerHeight}%`,
     maxWidth: isMobile ? '100%' : '1280px',
-    maxHeight: isMobile ? '400px' : '720px',
+    maxHeight: isMobile ? '500px' : '720px',
     position: 'relative' as const,
     overflow: 'hidden',
   };
@@ -278,6 +315,8 @@ const App: React.FC = () => {
               ref={screenshotRef}
               className="relative overflow-hidden rounded-lg mb-4 w-full"
               style={containerStyle}
+              onDragOver={handleDragOver}
+              onDrop={handleDrop}
             >
               <div style={backgroundWrapperStyle}>
                 <div style={backgroundStyle}>
@@ -301,7 +340,7 @@ const App: React.FC = () => {
                     </div>
                   </div>
                 ) : (
-                  <p className="text-gray-500 text-center">Your screenshot will appear here</p>
+                  <p className="text-white text-center">+ Drag, Upload or Paste your screenshot here</p>
                 )}
               </div>
             </div>

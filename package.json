@@ -12,8 +12,8 @@
   },
   "dependencies": {
     "canvas-confetti": "^1.9.3",
-    "html-to-image": "^1.11.11",
     "lucide-react": "^0.344.0",
+    "modern-screenshot": "^4.4.39",
     "react": "^18.3.1",
     "react-colorful": "^5.6.1",
     "react-dom": "^18.3.1"
