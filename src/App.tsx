@@ -220,9 +220,9 @@ const App: React.FC = () => {
 
   const containerStyle = {
     width: `${state.containerWidth}%`,
-    height: isMobile ? `${Math.max(500, Math.min(state.containerHeight * 5, 400))}px` : `${state.containerHeight}%`,
+    height: isMobile ? `${Math.max(300, Math.min(state.containerHeight * 5, 600))}px` : `${state.containerHeight}%`,
     maxWidth: isMobile ? '100%' : '1280px',
-    maxHeight: isMobile ? '500px' : '720px',
+    maxHeight: isMobile ? '600px' : '720px',
     position: 'relative' as const,
     overflow: 'hidden',
   };
@@ -437,8 +437,8 @@ const App: React.FC = () => {
                   </label>
                   <input
                     type="range"
-                    min="35"
-                    max="100"
+                    min={isMobile ? "60" : "35"}
+                    max={isMobile ? "120" : "100"}
                     value={state.containerHeight}
                     onChange={(e) => setState((prev) => ({ ...prev, containerHeight: Number(e.target.value) }))}
                     className="w-full"
