@@ -203,14 +203,14 @@ const App: React.FC = () => {
           return true;
         },
         quality: 1, // Set to maximum quality
-        scale: 2, // Increase scale for better resolution
+        scale: (isMobile ? 1.4 : 2), // Increase scale for better resolution
         style: {
-          'transform': 'scale(2)', // Reset any transforms
+          'transform': `scale(${isMobile ? 1.4 : 2})`, // Reset any transforms
           'transform-origin': 'top left',
           'border-radius': '0', // Ensure no border radius
         },
-        width: node.offsetWidth * 2, // Double the width
-        height: node.offsetHeight * 2, // Double the height
+        width: node.offsetWidth * (isMobile ? 1.4 : 2), // Double the width
+        height: node.offsetHeight * (isMobile ? 1.4 : 2), // Double the height
       })
         .then((dataUrl) => {
           const link = document.createElement('a');
