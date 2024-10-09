@@ -182,18 +182,22 @@ const App: React.FC = () => {
         height: node.style.height,
         maxWidth: node.style.maxWidth,
         maxHeight: node.style.maxHeight,
+        borderRadius: node.style.borderRadius,
+        overflow: node.style.overflow,
       };
       
       node.style.width = `${node.offsetWidth}px`;
       node.style.height = `${node.offsetHeight}px`;
       node.style.maxWidth = 'none';
       node.style.maxHeight = 'none';
+      node.style.borderRadius = '0'; // Remove border radius
+      node.style.overflow = 'visible'; // Ensure nothing is cut off
 
       // Use modern-screenshot's domToPng with improved options
       domToPng(node, {
         filter: (n) => {
           // Exclude problematic stylesheets
-          if (n.tagName === 'LINK' && n.getAttribute('rel') === 'stylesheet') {
+          if ((n as Element).tagName === 'LINK' && (n as Element).getAttribute('rel') === 'stylesheet') {
             return false;
           }
           return true;
@@ -202,7 +206,8 @@ const App: React.FC = () => {
         scale: 2, // Increase scale for better resolution
         style: {
           'transform': 'scale(2)', // Reset any transforms
-          'transform-origin': 'top left'
+          'transform-origin': 'top left',
+          'border-radius': '0', // Ensure no border radius
         },
         width: node.offsetWidth * 2, // Double the width
         height: node.offsetHeight * 2, // Double the height
