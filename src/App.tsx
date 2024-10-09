@@ -1,6 +1,6 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { domToPng } from 'modern-screenshot';
-import { Download, Upload, Maximize, PanelTop, CornerUpRight, Cloud, Sun, SunDim, Twitter, X } from 'lucide-react';
+import { Download, Upload, Maximize, PanelTop, CornerUpRight, Cloud, Sun, SunDim, Twitter, X, Copy, Check } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import ProductHuntBadge from './ProductHuntBadge';
 
@@ -79,6 +79,7 @@ const App: React.FC = () => {
   const [showModal, setShowModal] = useState(false);
 
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const [copySuccess, setCopySuccess] = useState(false);
 
   useEffect(() => {
     const handleResize = () => {
@@ -229,6 +230,72 @@ const App: React.FC = () => {
     }
   }, [state]);
 
+  const copyImageToClipboard = useCallback(() => {
+    if (screenshotRef.current) {
+      const node = screenshotRef.current;
+      
+      // Temporarily adjust styles for capture (same as in downloadImage)
+      const originalStyles = {
+        width: node.style.width,
+        height: node.style.height,
+        maxWidth: node.style.maxWidth,
+        maxHeight: node.style.maxHeight,
+        borderRadius: node.style.borderRadius,
+        overflow: node.style.overflow,
+      };
+      
+      Object.assign(node.style, {
+        width: `${node.offsetWidth}px`,
+        height: `${node.offsetHeight}px`,
+        maxWidth: 'none',
+        maxHeight: 'none',
+        borderRadius: '0',
+        overflow: 'visible',
+      });
+
+      domToPng(node, {
+        filter: (n) => {
+          if ((n as Element).tagName === 'LINK' && (n as Element).getAttribute('rel') === 'stylesheet') {
+            return false;
+          }
+          return true;
+        },
+        quality: 1,
+        scale: (isMobile ? 1.6 : 2),
+        style: {
+          'transform': `scale(${isMobile ? 1.6 : 2})`,
+          'transform-origin': 'top left',
+          'border-radius': '0',
+        },
+        width: node.offsetWidth * (isMobile ? 1.6 : 2),
+        height: node.offsetHeight * (isMobile ? 1.6 : 2),
+      })
+        .then((dataUrl) => {
+          // Convert data URL to Blob
+          fetch(dataUrl)
+            .then(res => res.blob())
+            .then(blob => {
+              // Create a new ClipboardItem
+              const item = new ClipboardItem({ "image/png": blob });
+              // Write the ClipboardItem to the clipboard
+              navigator.clipboard.write([item]).then(() => {
+                setCopySuccess(true);
+                setTimeout(() => setCopySuccess(false), 2000);
+              }, (err) => {
+                console.error("Failed to copy image: ", err);
+              });
+            });
+        })
+        .catch((err) => {
+          console.error('Error generating image:', err);
+        })
+        .finally(() => {
+          // Restore original styles
+          Object.assign(node.style, originalStyles);
+        });
+    }
+  }, [state, isMobile]);
+
   const containerStyle = {
     width: `${state.containerWidth}%`,
     height: isMobile ? `${Math.max(300, Math.min(state.containerHeight * 5, 600))}px` : `${state.containerHeight}%`,
@@ -376,13 +443,26 @@ const App: React.FC = () => {
                 Upload Image
               </button>
               {state.screenshot && (
-                <button
-                  onClick={downloadImage}
-                  className="bg-green-500 hover:bg-green-600 text-white font-medium py-1.5 px-3 rounded flex items-center text-sm"
-                >
-                  <Download className="mr-1.5" size={16} />
-                  Download Image
-                </button>
+                <>
+                  <button
+                    onClick={downloadImage}
+                    className="bg-green-500 hover:bg-green-600 text-white font-medium py-1.5 px-3 rounded flex items-center text-sm"
+                  >
+                    <Download className="mr-1.5" size={16} />
+                    Download Image
+                  </button>
+                  <button
+                    onClick={copyImageToClipboard}
+                    className={`bg-blue-500 hover:bg-blue-600 text-white font-medium py-1.5 px-3 rounded flex items-center text-sm`}
+                    disabled={copySuccess}
+                  >
+                    <div className="w-4 h-4 mr-1.5 relative">
+                      <Copy className={`absolute transition-opacity duration-300 ${copySuccess ? 'opacity-0' : 'opacity-100'}`} size={16} />
+                      <Check className={`absolute transition-opacity duration-300 ${copySuccess ? 'opacity-100' : 'opacity-0'}`} size={16} />
+                    </div>
+                    {'Copy to Clipboard'}
+                  </button>
+                </>
               )}
             </div>
           </div>
