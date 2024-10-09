@@ -189,10 +189,8 @@ const App: React.FC = () => {
       node.style.maxWidth = 'none';
       node.style.maxHeight = 'none';
 
-      // Use modern-screenshot's domToPng instead of toPng
+      // Use modern-screenshot's domToPng with improved options
       domToPng(node, {
-        cacheBust: true,
-        pixelRatio: 2,
         filter: (n) => {
           // Exclude problematic stylesheets
           if (n.tagName === 'LINK' && n.getAttribute('rel') === 'stylesheet') {
@@ -200,6 +198,14 @@ const App: React.FC = () => {
           }
           return true;
         },
+        quality: 1, // Set to maximum quality
+        scale: 2, // Increase scale for better resolution
+        style: {
+          'transform': 'scale(2)', // Reset any transforms
+          'transform-origin': 'top left'
+        },
+        width: node.offsetWidth * 2, // Double the width
+        height: node.offsetHeight * 2, // Double the height
       })
         .then((dataUrl) => {
           const link = document.createElement('a');
@@ -304,7 +310,7 @@ const App: React.FC = () => {
       <h1 className="text-center mb-4 sm:mb-8">
         <span className="pacifico-regular text-3xl sm:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-500 via-violet-500 to-pink-500 [text-shadow:0_0_rgba(0,0,0,0.1)] pl-1">prettify.pro</span>
       </h1>
-      <div id="mainapp" className="bg-white rounded-lg shadow-lg p-4 sm:p-8 w-full max-w-7xl relative">
+      <div id="mainapp" className="bg-white shadow-lg p-4 sm:p-8 w-full max-w-7xl relative">
         {/* Product Hunt badge positioned above mainapp */}
         <div className="absolute -top-16 right-0 hidden sm:flex items-center space-x-2">
           <a href="https://github.com/shobhit99/prettify" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-gray-800">
